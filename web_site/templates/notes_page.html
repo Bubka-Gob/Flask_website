@@ -1,0 +1,46 @@
+{% extends 'main_theme.html' %}
+{% block title %}Home{% endblock %}
+{% block optional_content %}
+    <form action="#" method="post">
+        <div class="mb-3">
+            <label for="InputName" class="form-label">Enter header:</label>
+            <input type="text" class="form-control" id="InputName" name="note_name">
+            <label for="exampleFormControlTextarea1" class="form-label">Enter new note:</label>
+            <textarea name="new_note" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+            <button type="submit" class="btn btn-primary">Post note</button>
+        </div>
+    </form>
+    <div class="accordion" id="accordionExample">
+        {% for year in years.keys() %}
+          {% if year != current_year %}
+
+          {% endif %}
+          {% for month in years[year].keys() %}
+            {% if month != current_month and year != current_year %}
+
+            {% endif %}
+            {% for day in years[year][month].keys() %}
+              {% if day != current_day and month != current_month and year != current_year %}
+
+              {% endif %}
+              {% for note in years[year][month][day] %}
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="b{{note.id}}">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#a{{note.id}}" aria-expanded="true" aria-controls="a{{note.id}}">
+                      {{note.note_name}} ({{note.date}})
+                    </button>
+                  </h2>
+                  <div id="a{{note.id}}" class="accordion-collapse collapse show" aria-labelledby="b{{note.id}}"
+                             data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                      {{note.text}}
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            {% endfor %}
+          {% endfor %}
+        {% endfor %}
+    </div>
+{% endblock %}

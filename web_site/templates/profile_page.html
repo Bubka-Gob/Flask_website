@@ -1,0 +1,25 @@
+{% extends 'main_theme.html' %}
+{% block title %}Login{% endblock %}
+{% block optional_content %}
+    <p>{{email}}</p>
+    <form action="#" method="post">
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="inputGroup-sizing-default">User name</span>
+            <input id="change_name" name="change_name" type="text" class="form-control"
+                   value="{{user_name}}" aria-label="Recipient's username" aria-describedby="button-addon2">
+            <button class="btn btn-outline-secondary" type="submit" id="button-addon1">Change</button>
+        </div>
+    </form>
+    <form action="#" method="post">
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="inputGroup-sizing-default2">Real name</span>
+            <input id="change_first_name" name="change_first_name" placeholder="First name"
+                   type="text" class="form-control" value="{{user_first_name}}"
+                   aria-label="Recipient's username" aria-describedby="button-addon2">
+            <input id="change_last_name" name="change_last_name" placeholder="Last name"
+                   type="text" class="form-control" value="{{user_last_name}}"
+                   aria-label="Recipient's username" aria-describedby="button-addon2">
+            <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Change</button>
+        </div>
+    </form>
+{% endblock %}

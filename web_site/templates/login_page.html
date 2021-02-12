@@ -1,0 +1,16 @@
+{% extends 'main_theme.html' %}
+{% block title %}Login{% endblock %}
+{% block optional_content %}
+    <form action="#" method="post">
+        <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Email address</label>
+            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="email">
+        </div>
+        <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Password</label>
+            <input type="password" class="form-control" id="exampleInputPassword1" name="password">
+            <div id="passwordHelp" class="form-text">Password must be longer than 3 digits and shorter than 20 digits.</div>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+{% endblock %}
