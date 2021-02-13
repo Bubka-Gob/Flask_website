@@ -10,29 +10,32 @@
             <button type="submit" class="btn btn-primary">Post note</button>
         </div>
     </form>
-    <div class="accordion" id="accordionExample">
         {% for year in years.keys() %}
-          {% if year != current_year %}
-
-          {% endif %}
+          <h1>{{year}}</h1>
           {% for month in years[year].keys() %}
-            {% if month != current_month and year != current_year %}
-
-            {% endif %}
+            <div class="accordion" id="accordion{{month}}{{year}}">
+            <div class="accordion-item">
+            <h2 class="accordion-header" id="header{{month}}{{year}}">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#button{{month}}{{year}}" aria-expanded="true" aria-controls="button{{month}}{{year}}">
+                {{month}}
+            </button>
+            </h2>
+            <div id="button{{month}}{{year}}" class="accordion-collapse collapse" aria-labelledby="header{{month}}{{year}}"
+                             data-bs-parent="#accordion{{month}}{{year}}">
+            <div class="accordion-body">
+            <div class="accordion" id="accordion_inner{{month}}{{year}}">
             {% for day in years[year][month].keys() %}
-              {% if day != current_day and month != current_month and year != current_year %}
-
-              {% endif %}
               {% for note in years[year][month][day] %}
                 <div class="accordion-item">
-                  <h2 class="accordion-header" id="b{{note.id}}">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#a{{note.id}}" aria-expanded="true" aria-controls="a{{note.id}}">
+                  <h2 class="accordion-header" id="header{{note.id}}">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#button{{note.id}}" aria-expanded="true" aria-controls="button{{note.id}}">
                       {{note.note_name}} ({{note.date}})
                     </button>
                   </h2>
-                  <div id="a{{note.id}}" class="accordion-collapse collapse show" aria-labelledby="b{{note.id}}"
-                             data-bs-parent="#accordionExample">
+                  <div id="button{{note.id}}" class="accordion-collapse collapse" aria-labelledby="header{{note.id}}"
+                             data-bs-parent="#accordion_inner{{month}}{{year}}">
                     <div class="accordion-body">
                       {{note.text}}
                     </div>
@@ -40,7 +43,11 @@
                 </div>
               {% endfor %}
             {% endfor %}
+            </div>
+            </div>
+            </div>
+            </div>
+            </div>
           {% endfor %}
         {% endfor %}
-    </div>
 {% endblock %}

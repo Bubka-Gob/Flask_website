@@ -58,32 +58,27 @@ def notes():
         data_base.session.commit()
         return render_template('notes_page.html', years=years)
 
-def sort_notes(date=None, phrase=None):
+def sort_notes(phrase=None):
     user_notes = Note.query.filter_by(user_id=current_user.id).all()
     dates = []
     for note in user_notes:
         dates.append(str(note.date).split(' ')[0].split('-'))
     years = {}
-    for splitted_date in dates:
+    for splitted_date in reversed(dates):
         years[splitted_date[0]] = {}
-    for splitted_date in dates:
+    for splitted_date in reversed(dates):
         for year in years.keys():
             if year==splitted_date[0]:
                 years[year][splitted_date[1]] = {}
-    for splitted_date in dates:
+    for splitted_date in reversed(dates):
         for year in years.keys():
             for month in years[year].keys():
                 if month==splitted_date[1]:
                     years[year][month][splitted_date[2]] = Note.query.filter(
                         func.DATE(Note.date) == f'{year}-{month}-{splitted_date[2]}').all()
-
-    print(years)
-    return years
-    if date:
-        pass
-    elif phrase:
+    if phrase:
         pass
     else:
-        pass
+        return years
 
 
