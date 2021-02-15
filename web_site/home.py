@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash
+from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import login_required, current_user
 from .models import User,Note, data_base
 from sqlalchemy.sql import func  #time
@@ -49,17 +49,32 @@ def profile():
 @login_required
 @home.route('/notes', methods= ['POST', 'GET'])
 def notes():
-    years = sort_notes()
     if request.method == 'GET':
+        years = sort_notes()
         return render_template('notes_page.html', years=years)
     else:
-        new_note = Note(note_name=request.form['note_name'], text=request.form['new_note'], user_id=current_user.id)
-        data_base.session.add(new_note)
-        data_base.session.commit()
-        return render_template('notes_page.html', years=years)
+        try:
+            phrase = request.form['phrase']
+            years = sort_notes(phrase)
+            return render_template('notes_page.html', years=years)
+        except:
+            if len(request.form['note_name'])<1 or len(request.form['new_note'])<1:
+                flash('Note can not be empty', 'error')
+                return redirect(url_for('notes_page.html'))
+            new_note = Note(note_name=request.form['note_name'], text=request.form['new_note'], user_id=current_user.id)
+            data_base.session.add(new_note)
+            data_base.session.commit()
+            return redirect(url_for('home.notes'))
 
 def sort_notes(phrase=None):
     user_notes = Note.query.filter_by(user_id=current_user.id).all()
+    if phrase:
+        temp = []
+        for note in user_notes:
+            if phrase in note.text or phrase in note.note_name:
+                temp.append(note)
+        user_notes = temp
+
     dates = []
     for note in user_notes:
         dates.append(str(note.date).split(' ')[0].split('-'))
@@ -68,17 +83,14 @@ def sort_notes(phrase=None):
         years[splitted_date[0]] = {}
     for splitted_date in reversed(dates):
         for year in years.keys():
-            if year==splitted_date[0]:
+            if year == splitted_date[0]:
                 years[year][splitted_date[1]] = {}
     for splitted_date in reversed(dates):
         for year in years.keys():
             for month in years[year].keys():
-                if month==splitted_date[1]:
+                if month == splitted_date[1]:
                     years[year][month][splitted_date[2]] = Note.query.filter(
                         func.DATE(Note.date) == f'{year}-{month}-{splitted_date[2]}').all()
-    if phrase:
-        pass
-    else:
-        return years
+    return years
 
 
