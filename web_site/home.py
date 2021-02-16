@@ -64,6 +64,7 @@ def notes():
             new_note = Note(note_name=request.form['note_name'], text=request.form['new_note'], user_id=current_user.id)
             data_base.session.add(new_note)
             data_base.session.commit()
+            flash('Note added successfully', 'success')
             return redirect(url_for('home.notes'))
 
 def sort_notes(phrase=None):
@@ -71,26 +72,26 @@ def sort_notes(phrase=None):
     if phrase:
         temp = []
         for note in user_notes:
-            if phrase in note.text or phrase in note.note_name:
+            if phrase.lower() in note.text.lower() or phrase.lower() in note.note_name.lower():
                 temp.append(note)
         user_notes = temp
+    user_notes_ids = [note.id for note in reversed(user_notes)]
 
     dates = []
-    for note in user_notes:
+    for note in reversed(user_notes):
         dates.append(str(note.date).split(' ')[0].split('-'))
     years = {}
-    for splitted_date in reversed(dates):
+    for splitted_date in dates:
         years[splitted_date[0]] = {}
-    for splitted_date in reversed(dates):
+    for splitted_date in dates:
         for year in years.keys():
             if year == splitted_date[0]:
                 years[year][splitted_date[1]] = {}
-    for splitted_date in reversed(dates):
+    for splitted_date in dates:
         for year in years.keys():
             for month in years[year].keys():
                 if month == splitted_date[1]:
                     years[year][month][splitted_date[2]] = Note.query.filter(
-                        func.DATE(Note.date) == f'{year}-{month}-{splitted_date[2]}').all()
+                        func.DATE(Note.date) == f'{year}-{month}-{splitted_date[2]}').\
+                        filter(Note.id.in_(user_notes_ids)).all()
     return years
-
-
